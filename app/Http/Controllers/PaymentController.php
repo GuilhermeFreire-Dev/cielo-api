@@ -64,7 +64,7 @@ class PaymentController extends Controller
 
             return response()->json([
                 'status' => 'success',
-                'data' => $this->paymentRepository->find($payment->id)
+                'content' => $this->paymentRepository->find($payment->id)
             ], 201);
 
         } catch (ValidationException $ve) {
