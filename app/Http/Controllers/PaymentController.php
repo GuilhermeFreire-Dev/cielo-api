@@ -11,6 +11,7 @@ use App\Services\CieloAPIService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use Inertia\Inertia;
 use Validator;
 
 class PaymentController extends Controller
@@ -21,6 +22,11 @@ class PaymentController extends Controller
         private AddressRepository $addressRepository,
         private CieloAPIService $cieloAPIService
     ) {}
+
+    public function pay()
+    {
+        return Inertia::render('Payment/Pay');
+    }
 
     public function createBoleto(Request $request)
     {
