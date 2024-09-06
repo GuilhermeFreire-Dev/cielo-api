@@ -34,18 +34,18 @@ class PaymentController extends Controller
 
             $validatedData = Validator::validate($request->all(), [
                 'customer.name' => 'required|string',
-                'customer.identity' => 'required|string|max:14',
+                'customer.identity' => 'required|string|cpf',
                 'address.street' => 'required|string|max:24',
-                'address.number' => 'required|integer|max:5',
+                'address.number' => 'required|string|max:5',
                 'address.complement' => 'nullable|string|max:14',
                 'address.zip_code' => 'required|string|max:9',
                 'address.city' => 'required|string|max:20',
-                'address.state' => 'required|string|size:2',
+                'address.state' => 'required|string|uf',
                 'address.country' => 'required|string|size:2',
                 'address.district' => 'required|string|max:50',
                 'payment.amount' => 'required|integer|min:0'
             ]);
-
+            
             $customer = $this->customerRepository->create($validatedData['customer']);
             $addressData = $validatedData['address'];
             $addressData['customer_id'] = $customer->id;
@@ -53,15 +53,15 @@ class PaymentController extends Controller
             $paymentData = $validatedData['payment'];
             $paymentData['customer_id'] = $customer->id;
             $paymentData['expire_at'] = Carbon::now()->addDays(3);
-            $paymentData['boleto_address'] = 'Boleto address example';
+            $paymentData['boleto_address'] = 'Av Fictícia 100, Bairro Simulado, Cidade Fake BR';
             $paymentData['provider'] = 'Simulado';
-            $paymentData['boleto_instructions'] = 'Instructions';
-            $paymentData['boleto_demonstrative'] = 'Demonstrative example';
+            $paymentData['boleto_instructions'] = 'Pagável em qualquer instituição financeira até a data do vencimento';
+            $paymentData['boleto_demonstrative'] = 'Exmplo de demonstrativo';
             $paymentData['type'] = PaymentTypeEnum::BOLETO;
             $payment = $this->paymentRepository->create($paymentData);
 
             $this->cieloAPIService->createBoleto($customer, $address, $payment);
-
+            
             return response()->json([
                 'status' => 'success',
                 'content' => $this->paymentRepository->find($payment->id)
