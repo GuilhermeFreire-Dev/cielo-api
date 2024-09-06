@@ -23,11 +23,6 @@ class PaymentController extends Controller
         private CieloAPIService $cieloAPIService
     ) {}
 
-    public function pay()
-    {
-        return Inertia::render('Payment/Pay');
-    }
-
     public function createBoleto(Request $request)
     {
         try {
